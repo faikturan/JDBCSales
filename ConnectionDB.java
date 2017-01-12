@@ -45,12 +45,12 @@ public class ConnectionDB {
 						prop.getProperty("mysql.database"),
 						prop.getProperty("mysql.username"),
 						prop.getProperty("mysql.password"));
-				log.info("Connection established ");
-			} catch (Exception e) {
-				// TODO: handle exception
+				log.info("Connection established with the server");
+			} catch (Exception ex) {
+				log.error("Could not establish connection", ex);
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
+		} catch (ClassNotFoundException ex) {
+			log.error("Driver not registered", ex);
 		}
 		
 		return null;
