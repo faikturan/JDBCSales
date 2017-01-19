@@ -159,8 +159,6 @@ public class CustomerServiceImpl implements CustomerService {
 					cn.close();
 				if(pstm != null)
 					pstm.close();
-				if(rs != null)
-					rs.close();
 			} catch (Exception exception2) {
 				log.error(exception2);
 			}
@@ -170,14 +168,73 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public boolean deleteCustomer(int id) {
-		// TODO Auto-generated method stub
-		return false;
+		log.info("#deleteCustomerById");
+		
+		boolean flag = false;
+		String sql = "UPDATE db_sales.customer c"
+				+"SET c.deletedDate = NOW(), "
+				+"c.deleted = 1 "
+				+"WHERE c.id = ?";
+		try {
+			cn = new ConnectionDB().getConnection();
+			pstm = cn.prepareStatement(sql);
+			
+			pstm.setInt(1, id);
+			
+			int count = pstm.executeUpdate();
+			flag = count > 0 ? true : false;
+			log.info("Records deleted: " +count);
+			
+		} catch (Exception exception) {
+			log.error(exception);
+		}finally {
+			try {
+				if(cn != null)
+					cn.close();
+				if(pstm != null)
+					pstm.close();
+			} catch (Exception exception2) {
+				log.error(exception2);
+			}
+		}
+		return flag;
 	}
 
 	@Override
 	public boolean addCustomer(Customer customer) {
-		// TODO Auto-generated method stub
-		return false;
+		log.info("#addCustomer");
+		
+		boolean flag = false;
+		String sql = "INSERT INTO db_sales.customer (id, companyName, contactName, address,"
+				+ "mailContact, phoneNumber, createdDate, updatedDate, deletedDate, deleted)"
+				+ "VALUES (NULL,?,?,?,?,?,NOW(),NULL, NULL,0);";
+		try {
+			cn = new ConnectionDB().getConnection();
+			pstm = cn.prepareStatement(sql);
+			
+			pstm.setString(1, customer.getCompanyName());
+			pstm.setString(2, customer.getContactName());
+			pstm.setString(3, customer.getAddress());
+			pstm.setString(4, customer.getMailContact());
+			pstm.setString(5, customer.getPhoneNumber());
+						
+			int count = pstm.executeUpdate();
+			flag = count > 0 ? true : false;
+			log.info("Records inserted: " +count);
+			
+		} catch (Exception exception) {
+			log.error(exception);
+		}finally {
+			try {
+				if(cn != null)
+					cn.close();
+				if(pstm != null)
+					pstm.close();
+			} catch (Exception exception2) {
+				log.error(exception2);
+			}
+		}
+		return flag;
 	}
 
 }
